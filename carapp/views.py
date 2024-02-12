@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import CarType, Vehicle
+from .models import CarType, Vehicle, LabGroupMembers
+from django.shortcuts import render, get_object_or_404
+from django.views import View
 
 
 # Create your views here.
@@ -12,7 +14,7 @@ def homepage(request):
     for cartype in cartype_list:
         para1 = '<p>' + str(cartype.id) + ': ' + str(cartype) + '</p>'
         response.write(para1)
-
+    # displaying 10 cars in descending order
     vehicles = Vehicle.objects.all().order_by('-car_price')[:10]
     heading2 = '<p>' + 'Vehicle List Descending order of price:' + '</p>'
     response.write(heading2)
@@ -32,22 +34,53 @@ def aboutUs(request):
 
 def cardetail(request, cartype_no):
     # get the cartype object by the cartype_no
-    cartype = CarType.objects.get(id=cartype_no)
+    # cartype = CarType.objects.get(id=cartype_no)
+    cartype = get_object_or_404(CarType, id=cartype_no)
 
     # get the queryset of vehicles that belong to that cartype
     vehicles = Vehicle.objects.filter(car_type=cartype)
 
-    # create an HttpResponse object to return as the response
     response = HttpResponse()
-
-    # write a heading with the cartype name
     heading1 = '<p>' + 'Vehicles of ' + str(cartype) + ':' + '</p>'
     response.write(heading1)
 
     # iterate over the vehicles and write a paragraph with the vehicle id, name, and price
     for vehicle in vehicles:
-        para = '<p>' + str(vehicle.id) + ': ' + str(vehicle) + ': ' + str(vehicle.car_price) + '</p>'
+        para = '<p>' + str(vehicle.id) + ': ' + str(vehicle) + ' - Price: ' + str(vehicle.car_price) + '</p>'
         response.write(para)
 
-    # return the response
     return response
+
+
+# This was done using the CBV
+class LabGroupMembersView(View):
+    def get(self, request):
+        # Retrieving all the lab group members from the model
+        members = LabGroupMembers.objects.all()
+
+        response = HttpResponse()
+        heading1 = '<p>' + 'Details of members:' + '</p>'
+        response.write(heading1)
+
+        # Creating a list for member details
+        member_details = []
+        for member in members:
+            member_details.append({
+                'first_name': member.first_name,
+                'last_name': member.last_name,
+                'semester': member.semester,
+                'personal_page_link': member.personal_page_link,
+            })
+
+        # Display member details
+        for member in member_details:
+            mem_details = f'<p>{member["first_name"]} {member["last_name"]} (Semester {member["semester"]}) - LinkedIn: <a href="{member["personal_page_link"]}" target="_blank">Link</a></p>'
+            response.write(mem_details)
+
+        return response
+
+# Differences noticed:
+#
+# 1. Method Separation: In CBV, we separate code based on HTTP methods, but FBV directly handles logic in the view function.
+# 2. Class Based Approach: CBV extends built in `View` class and provides better organization.
+# 3. URL Configuration: In urls.py for CBV we use `.as_view()` to complete the routing, whereas in FBV we can directly call the view function.
