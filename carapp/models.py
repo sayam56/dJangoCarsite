@@ -62,3 +62,16 @@ class OrderVehicle(models.Model):
 
     def total_price(self):
         return self.num_ordered * self.vehicle.car_price
+
+
+class LabGroupMembers(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    semester = models.PositiveIntegerField()
+    personal_page_link = models.URLField()
+
+    def __str__(self):
+        return self.first_name
+
+    class Meta:
+        ordering = ['first_name']
