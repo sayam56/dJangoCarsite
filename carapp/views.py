@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import CarType, Vehicle, LabGroupMembers
+from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 
@@ -8,28 +8,32 @@ from django.views import View
 # Create your views here.
 def homepage(request):
     cartype_list = CarType.objects.all().order_by('id')
-    response = HttpResponse()
-    heading1 = '<p>' + 'Different Types of Cars:' + '</p>'
-    response.write(heading1)
-    for cartype in cartype_list:
-        para1 = '<p>' + str(cartype.id) + ': ' + str(cartype) + '</p>'
-        response.write(para1)
-    # displaying 10 cars in descending order
-    vehicles = Vehicle.objects.all().order_by('-car_price')[:10]
-    heading2 = '<p>' + 'Vehicle List Descending order of price:' + '</p>'
-    response.write(heading2)
-    for vehicle in vehicles:
-        para2 = '<p>' + str(vehicle.id) + ': ' + str(vehicle) + ': ' + str(vehicle.car_price) + '</p>'
-        response.write(para2)
+    return render(request, 'carapp/homepage.html', {'cartype_list': cartype_list})
+# yes, we are passing extra context variable 'cartype_list' to the template which contains a list of all the vehicles
+# for all car type
 
-    return response
+# def homepage(request):
+#     cartype_list = CarType.objects.all().order_by('id')
+#     response = HttpResponse()
+#     heading1 = '<p>' + 'Different Types of Cars:' + '</p>'
+#     response.write(heading1)
+#     for cartype in cartype_list:
+#         para1 = '<p>' + str(cartype.id) + ': ' + str(cartype) + '</p>'
+#         response.write(para1)
+#     # displaying 10 cars in descending order
+#     vehicles = Vehicle.objects.all().order_by('-car_price')[:10]
+#     heading2 = '<p>' + 'Vehicle List Descending order of price:' + '</p>'
+#     response.write(heading2)
+#     for vehicle in vehicles:
+#         para2 = '<p>' + str(vehicle.id) + ': ' + str(vehicle) + ': ' + str(vehicle.car_price) + '</p>'
+#         response.write(para2)
+#
+#     return response
 
 
 def aboutUs(request):
-    response = HttpResponse()
-    heading1 = '<p>' + 'This is a car showroom' + '</p>'
-    response.write(heading1)
-    return response
+    return render(request, 'carapp/aboutUs.html')
+# we didn't need to pass any variables using the context parameter
 
 
 def cardetail(request, cartype_no):
@@ -39,16 +43,15 @@ def cardetail(request, cartype_no):
 
     # get the queryset of vehicles that belong to that cartype
     vehicles = Vehicle.objects.filter(car_type=cartype)
-
     response = HttpResponse()
     heading1 = '<p>' + 'Vehicles of ' + str(cartype) + ':' + '</p>'
     response.write(heading1)
 
-    # iterate over the vehicles and write a paragraph with the vehicle id, name, and price
     for vehicle in vehicles:
-        para = '<p>' + str(vehicle.id) + ': ' + str(vehicle) + ' - Price: ' + str(vehicle.car_price) + '</p>'
-        response.write(para)
-
+        orders = OrderVehicle.objects.filter(vehicle=vehicle)
+        for order in orders:
+            para = '<p> buyer is: ' + str(order.buyer) + ', Vehicle name is: ' + str(order.vehicle) + '</p>'
+            response.write(para)
     return response
 
 
@@ -81,6 +84,8 @@ class LabGroupMembersView(View):
 
 # Differences noticed:
 #
-# 1. Method Separation: In CBV, we separate code based on HTTP methods, but FBV directly handles logic in the view function.
+# 1. Method Separation: In CBV, we separate code based on HTTP methods, but FBV directly handles logic in the view
+# function.
 # 2. Class Based Approach: CBV extends built in `View` class and provides better organization.
-# 3. URL Configuration: In urls.py for CBV we use `.as_view()` to complete the routing, whereas in FBV we can directly call the view function.
+# 3. URL Configuration: In urls.py for CBV we use `.as_view()` to complete the routing, whereas in FBV we can directly
+# call the view function.
