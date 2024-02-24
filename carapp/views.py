@@ -36,6 +36,25 @@ def aboutUs(request):
 # we didn't need to pass any variables using the context parameter
 
 
+# this was changed for the lab viva
+# def cardetail(request, cartype_no):
+    # # get the cartype object by the cartype_no
+    # # cartype = CarType.objects.get(id=cartype_no)
+    # cartype = get_object_or_404(CarType, id=cartype_no)
+    #
+    # # get the queryset of vehicles that belong to that cartype
+    # vehicles = Vehicle.objects.filter(car_type=cartype)
+    # response = HttpResponse()
+    # heading1 = '<p>' + 'Vehicles of ' + str(cartype) + ':' + '</p>'
+    # response.write(heading1)
+    #
+    # for vehicle in vehicles:
+    #     orders = OrderVehicle.objects.filter(vehicle=vehicle)
+    #     for order in orders:
+    #         para = '<p> buyer is: ' + str(order.buyer) + ', Vehicle name is: ' + str(order.vehicle) + '</p>'
+    #         response.write(para)
+    # return response
+
 def cardetail(request, cartype_no):
     # get the cartype object by the cartype_no
     # cartype = CarType.objects.get(id=cartype_no)
@@ -43,16 +62,25 @@ def cardetail(request, cartype_no):
 
     # get the queryset of vehicles that belong to that cartype
     vehicles = Vehicle.objects.filter(car_type=cartype)
-    response = HttpResponse()
-    heading1 = '<p>' + 'Vehicles of ' + str(cartype) + ':' + '</p>'
-    response.write(heading1)
 
-    for vehicle in vehicles:
-        orders = OrderVehicle.objects.filter(vehicle=vehicle)
-        for order in orders:
-            para = '<p> buyer is: ' + str(order.buyer) + ', Vehicle name is: ' + str(order.vehicle) + '</p>'
-            response.write(para)
-    return response
+    # response = HttpResponse()
+    # heading1 = '<p>' + 'Vehicles of ' + str(cartype) + ':' + '</p>'
+    # response.write(heading1)
+    #
+    # # iterate over the vehicles and write a paragraph with the vehicle id, name, and price
+    # for vehicle in vehicles:
+    #     para = '<p>' + str(vehicle.id) + ': ' + str(vehicle) + ' - Price: ' + str(vehicle.car_price) + '</p>'
+    #     response.write(para)
+    #
+    # return response
+    # create a context dictionary to pass to the template
+    context = {
+        'cartype': cartype,
+        'vehicles': vehicles,
+    }
+
+    # render the template with the context
+    return render(request, 'carapp/cardetail.html', {'context': context})
 
 
 # This was done using the CBV
@@ -60,10 +88,6 @@ class LabGroupMembersView(View):
     def get(self, request):
         # Retrieving all the lab group members from the model
         members = LabGroupMembers.objects.all()
-
-        response = HttpResponse()
-        heading1 = '<p>' + 'Details of members:' + '</p>'
-        response.write(heading1)
 
         # Creating a list for member details
         member_details = []
@@ -75,12 +99,8 @@ class LabGroupMembersView(View):
                 'personal_page_link': member.personal_page_link,
             })
 
-        # Display member details
-        for member in member_details:
-            mem_details = f'<p>{member["first_name"]} {member["last_name"]} (Semester {member["semester"]}) - LinkedIn: <a href="{member["personal_page_link"]}" target="_blank">Link</a></p>'
-            response.write(mem_details)
-
-        return response
+        # render the template with the context
+        return render(request, 'carapp/lab_group_members.html', {'member_details': member_details})
 
 # Differences noticed:
 #
