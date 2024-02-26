@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from multiselectfield import MultiSelectField
 
 
 # Create your models here.
@@ -11,12 +12,24 @@ class CarType(models.Model):
 
 
 class Vehicle(models.Model):
+    FEATURES = [
+        ('CC', 'Cruise Control'),
+        ('AI', 'Audio Interface'),
+        ('A', 'Airbags'),
+        ('AC', 'Air Conditioning'),
+        ('SH', 'Seat Heating'),
+        ('PA', 'ParkAssist'),
+        ('PS', 'Power Steering'),
+        ('RC', 'Reversing Camera'),
+        ('AS', 'Auto Start/Stop')
+    ]
     car_type = models.ForeignKey(CarType, related_name='vehicles', on_delete=models.CASCADE)
     car_name = models.CharField(max_length=200)
     car_price = models.DecimalField(max_digits=12, decimal_places=6)
     inventory = models.PositiveIntegerField(default=10)
     instock = models.BooleanField(default=True)
     product_desc = models.TextField(max_length=255, blank=True, default='')
+    car_features = models.CharField(max_length=2, choices=FEATURES, default='A')
 
     def __str__(self):
         return self.car_name

@@ -109,3 +109,9 @@ class LabGroupMembersView(View):
 # 2. Class Based Approach: CBV extends built in `View` class and provides better organization.
 # 3. URL Configuration: In urls.py for CBV we use `.as_view()` to complete the routing, whereas in FBV we can directly
 # call the view function.
+
+
+def info_display(request):
+    favourite_food = 'pizza'
+    hobby = 'singing'
+    return render(request, 'carapp/info_template.html', {'favourite_food':favourite_food, 'hobby':hobby})

@@ -1,0 +1,16 @@
+body {
+    background-color: powderblue;
+    color: black;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.hbar1 {
+    display: inline;
+    margin: 15px;
+}
+
