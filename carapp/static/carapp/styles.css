@@ -10,7 +10,7 @@ h1 {
 }
 
 .hbar1 {
-    display: inline;
+    display: inline-block;
     margin: 15px;
 }
 
