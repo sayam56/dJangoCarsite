@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>About Us</title>
-</head>
-<body>
+{% extends 'carapp/base.html' %}
+
+{% block body_block %}
     <h1>THIS IS A CAR SHOWROOM</h1>
-    <p><a href="{% url 'carapp:homepage' %}">Back to Home Page USING NAMESPACE</a></p>
-    <p><a href="/">Back to Home Page USING Hardcoded URL</a></p>
-</body>
-</html>
+{#    <p><a href="{% url 'carapp:homepage' %}">Back to Home Page USING NAMESPACE</a></p>#}
+{#    <p><a href="/">Back to Home Page USING Hardcoded URL</a></p>#}
+{% endblock %}

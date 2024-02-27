@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Car Detail</title>
-</head>
-<body>
+{% extends 'carapp/base.html' %}
+
+{% block body_block %}
     <h1>This is the CAR DETAIL Page</h1>
 
     <h2>Following are the Vehicles in {{ context.cartype }} with Cartype No {{ context.cartype.id }}:</h2>
@@ -13,7 +9,4 @@
         <li>{{ vehicle }}</li>
         {% endfor %}
     </ul>
-
-    <p><a href="{% url 'carapp:homepage' %}">Back to Home Page</a></p>
-</body>
-</html>
+{% endblock %}
