@@ -22,7 +22,10 @@ app_name = 'carapp'
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),
-    path('<int:cartype_no>/', views.cardetail, name='cardetail'),
     path('lab_group_members/', LabGroupMembersView.as_view(), name='lab_group_members'),
+    path('<int:cartype_no>/', views.cardetail, name='cardetail'),
+    path('info_display/', views.info_display, name='info_display'),
     path('aboutus/', views.aboutUs, name='aboutUs'),
+    path('vehicles/', views.vehicles, name='vehicles'),
+    path('orderhere/', views.orderhere, name='orderhere'),
 ]

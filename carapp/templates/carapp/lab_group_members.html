@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab Group Members</title>
+</head>
+<body>
+    <h1>Details of Members:</h1>
+    {% for member in member_details %}
+        <li>{{ member.first_name }} {{ member.last_name }} (Semester {{ member.semester }}) - LinkedIn: <a href="{{ member.personal_page_link }}" target="_blank">Link</a></li>
+    {% endfor %}
+    <p><a href="{% url 'carapp:homepage' %}">Back to Home Page</a></p>
+</body>
+</html>
