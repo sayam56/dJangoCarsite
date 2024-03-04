@@ -1,5 +1,5 @@
 from django import forms
-from carapp.models import OrderVehicle
+from carapp.models import OrderVehicle, Vehicle
 
 
 class OrderVehicleForm(forms.ModelForm):
@@ -17,3 +17,8 @@ class ContactForm(forms.Form):
     email = forms.EmailField(label='Your Email')
     subject = forms.CharField(max_length=200, label='Subject')
     message = forms.CharField(widget=forms.Textarea, label='Your Message')
+
+
+class SearchVehicleForm(forms.Form):
+    car_name = forms.ModelChoiceField(queryset=Vehicle.objects.all(), empty_label="Select Vehicle")
+

@@ -28,4 +28,5 @@ urlpatterns = [
     path('aboutus/', views.aboutUs, name='aboutUs'),
     path('vehicles/', views.vehicles, name='vehicles'),
     path('orderhere/', views.orderhere, name='orderhere'),
+    path('vsearch/', views.vsearch, name='vsearch'),
 ]

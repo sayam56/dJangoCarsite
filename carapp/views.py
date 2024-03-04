@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle
 from django.shortcuts import render, get_object_or_404
 from django.views import View
+from .forms import SearchVehicleForm
 
 
 # Create your views here.
@@ -133,3 +134,16 @@ def vehicles(request):
 
 def orderhere(request):
     return render(request, 'carapp/orderhere.html')
+
+
+def vsearch(request):
+    car_price = ''
+    if request.method == 'POST':
+        form = SearchVehicleForm(request.POST)
+        if form.is_valid():
+            selected_car = form.cleaned_data['car_name']
+            car_price = selected_car.car_price
+    else:
+        form = SearchVehicleForm()
+
+    return render(request, 'carapp/vsearch.html', {'form': form, 'car_price': car_price})
