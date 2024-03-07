@@ -6,6 +6,7 @@ from multiselectfield import MultiSelectField
 # Create your models here.
 class CarType(models.Model):
     name = models.CharField(max_length=150)
+    image = models.ImageField(upload_to='cartype_images/', null=True)  # new line
 
     def __str__(self):
         return self.name

@@ -46,3 +46,20 @@ h1 {
     color: rgba(0,0,0,.7);
     text-shadow: 0 1px rgba(255, 255, 255, 0.1);
 }
+
+.car-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.car-list li {
+  width: 500px;
+  margin: 10px;
+  text-align: center;
+}
+
+.car-list img {
+  width: 100%;
+  height: auto;
+}
