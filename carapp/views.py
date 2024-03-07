@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle
 from django.shortcuts import render, get_object_or_404
 from django.views import View
-from .forms import SearchVehicleForm
+from .forms import SearchVehicleForm, OrderVehicleForm
 
 
 # Create your views here.
@@ -133,7 +133,23 @@ def vehicles(request):
 
 
 def orderhere(request):
-    return render(request, 'carapp/orderhere.html')
+    msg = ''
+    vehiclelist = Vehicle.objects.all()
+    if request.method == 'POST':
+        form = OrderVehicleForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            if order.num_ordered <= order.vehicle.inventory:
+                order.vehicle.inventory -= order.num_ordered
+                order.vehicle.save()
+                order.save()
+                msg = 'Your vehicle has been ordered'
+            else:
+                msg = 'We do not have sufficient stock to fill your order.'
+                return render(request, 'carapp/nosuccess_order.html', {'msg': msg})
+    else:
+        form = OrderVehicleForm()
+    return render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
 
 
 def vsearch(request):

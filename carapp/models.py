@@ -67,7 +67,7 @@ class OrderVehicle(models.Model):
         (2, 'Shipped'),
         (3, 'Delivered'),
     ]
-    order_status = models.IntegerField(choices=ORDER_STATUS_CHOICES)  # Status of the order
+    order_status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=1)  # Status of the order
     last_updated_date = models.DateField(auto_now=True)  # Date when the order was last updated
 
     def __str__(self):

@@ -4,11 +4,12 @@
     <h1> Search For Vehicles </h1>
     <form method="post">
       {% csrf_token %}
-        {{ form.as_p }}
+        {{ form }}
       <button type="submit">Filter Cars</button>
     </form>
 
     {% if car_price %}
-        <p>Selected Car Price: ${{ car_price }}</p>
+        <h3>Your Search Result</h3>
+        <p> ${{ car_price }} </p>
     {% endif %}
 {% endblock %}
