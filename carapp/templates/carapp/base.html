@@ -6,15 +6,29 @@
     <title> CarSite - {% block title %} Welcome! {% endblock %}</title>
 </head>
 <body>
-<div>
-    <h1>{% block myhdg %} Welcome to our online car store {% endblock %}</h1>
-    {% block body_block %}*** {% endblock %}
+<div class="navbar">
+    <a href="{% url 'carapp:homepage' %}" {% if request.resolver_match.url_name == 'homepage' %}class="active"{% endif %}>Home</a>
+    <a href="{% url 'carapp:aboutUs' %}" {% if request.resolver_match.url_name == 'aboutUs' %}class="active"{% endif %}>About US</a>
+    <a href="{% url 'carapp:vsearch'%}" {% if request.resolver_match.url_name == 'vsearch' %}class="active"{% endif %}>Search Here</a>
+    <a href="{% url 'carapp:lab_group_members'%}" {% if request.resolver_match.url_name == 'lab_group_members' %}class="active"{% endif %}>Team Detail</a>
+    <a href="{% url 'carapp:vehicles'%}" {% if request.resolver_match.url_name == 'vehicles' %}class="active"{% endif %}>Vehicles</a>
+    <a href="{% url 'carapp:orderhere'%}" {% if request.resolver_match.url_name == 'orderhere' %}class="active"{% endif %}>Order</a>
 </div>
 <div>
-    <ul>
-        <li class="hbar1"><a href="http://127.0.0.1:8000/aboutus/"> Find out about this site </a></li>
-        <li class="hbar1"><a href = "{% url 'carapp:homepage'%}"> Click here to return to the home page </a><br/></li>
-        <li class="hbar1"><a href = "{% url 'carapp:vehicles'%}"> Vehicles </a><br/></li>
-    </ul>
+    <h1>{% block my %} Welcome to our online car store {% endblock %}</h1>
+    {% block body_block %} *** {% endblock %}
+</div>
+<div>
+{#    <ul>#}
+{#        <li class="hbar1"><a href="http://127.0.0.1:8000/aboutus/"> Find out about this site </a></li>#}
+{#        <li class="hbar1"><a href = "{% url 'carapp:homepage'%}"> Click here to return to the home page </a><br/></li>#}
+{#        <li class="hbar1"><a href = "{% url 'carapp:vehicles'%}"> Vehicles </a><br/></li>#}
+{#        <li class="hbar1"><a href = "{% url 'carapp:vsearch'%}"> Search Here </a><br/></li>#}
+{#    </ul>#}
+    <div class="footer-copyright">
+        <p>© 2024 Copyrights Reserved </p>
+    </div>
 </div>
 </body>
+
+
