@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
-from .views import LabGroupMembersView
+from .views import LabGroupMembersView, SignUpView
 
 app_name = 'carapp'
 
@@ -29,4 +29,7 @@ urlpatterns = [
     path('vehicles/', views.vehicles, name='vehicles'),
     path('orderhere/', views.orderhere, name='orderhere'),
     path('vsearch/', views.vsearch, name='vsearch'),
+    path('signup/', SignUpView.as_view(), name='signup'),
+    path('login/', views.login_here, name='login'),
+    path('logout/', views.logout_here, name='logout'),
 ]

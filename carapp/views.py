@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle
 from django.shortcuts import render, get_object_or_404
-from django.views import View
-from .forms import SearchVehicleForm, OrderVehicleForm
+from django.views import View, generic
+from .forms import SearchVehicleForm, OrderVehicleForm, SignupForm, SearchCartypeForm
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 # Create your views here.
@@ -35,7 +38,17 @@ def homepage(request):
 
 
 def aboutUs(request):
-    return render(request, 'carapp/aboutUs.html')
+    image = ''
+    if request.method == 'POST':
+        form = SearchCartypeForm(request.POST)
+        if form.is_valid():
+            car_type = form.cleaned_data['car_type']
+            image = car_type.image
+    else:
+        form = SearchCartypeForm()
+
+    return render(request, 'carapp/aboutUs.html', {'form': form, 'image': image})
+    # return render(request, 'carapp/aboutUs.html')
 
 
 # we didn't need to pass any variables using the context parameter
@@ -163,3 +176,32 @@ def vsearch(request):
         form = SearchVehicleForm()
 
     return render(request, 'carapp/vsearch.html', {'form': form, 'car_price': car_price})
+
+
+class SignUpView(generic.CreateView):
+    form_class = SignupForm
+    success_url = reverse_lazy('carapp/login')  # After signing up, redirect to login page
+    template_name = 'carapp/signup.html'
+
+
+def login_here(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('carapp:homepage'))
+            else:
+                return HttpResponse('Your account is disabled')
+        else:
+            return HttpResponse('Login details are incorrect')
+    else:
+        return render(request, 'carapp/login_here.html')
+
+
+@login_required
+def logout_here(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('carapp:homepage'))

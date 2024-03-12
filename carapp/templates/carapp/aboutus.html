@@ -2,6 +2,18 @@
 
 {% block body_block %}
     <h1>THIS IS A CAR SHOWROOM</h1>
+    <form method="post">
+      {% csrf_token %}
+        {{ form }}
+      <button type="submit">Filter Cars</button>
+    </form>
+
+    {% if image %}
+        <div class="about_car_view">
+            <h3>Your Search Result</h3>
+            <img src="{{ image.url }}" alt="{{ cartype.name }}">
+        </div>
+    {% endif %}
 {#    <p><a href="{% url 'carapp:homepage' %}">Back to Home Page USING NAMESPACE</a></p>#}
 {#    <p><a href="/">Back to Home Page USING Hardcoded URL</a></p>#}
 {% endblock %}

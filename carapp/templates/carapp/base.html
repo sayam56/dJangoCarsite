@@ -14,7 +14,7 @@
     <a href="{% url 'carapp:vehicles'%}" {% if request.resolver_match.url_name == 'vehicles' %}class="active"{% endif %}>Vehicles</a>
     <a href="{% url 'carapp:orderhere'%}" {% if request.resolver_match.url_name == 'orderhere' %}class="active"{% endif %}>Order</a>
 </div>
-<div>
+<div class="content">
     <h1>{% block my %} Welcome to our online car store {% endblock %}</h1>
     {% block body_block %} *** {% endblock %}
 </div>
