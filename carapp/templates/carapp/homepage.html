@@ -2,6 +2,7 @@
 
 {% block body_block %}
     {% if cartype_list %}
+        <p>You have viewed this page {{ views }} times.</p>
         <h2>Available Type of Cars</h2>
         <ol class="car-list">
             {% for cartype in cartype_list %}

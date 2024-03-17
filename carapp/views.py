@@ -1,15 +1,19 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle
+from django.http import HttpResponse, HttpResponseRedirect
+from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle, Buyer
 from django.shortcuts import render, get_object_or_404
-from django.views import View
-from .forms import SearchVehicleForm, OrderVehicleForm
+from django.views import View, generic
+from .forms import SearchVehicleForm, OrderVehicleForm, SignupForm, SearchCartypeForm
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 # Create your views here.
 def homepage(request):
+    request.session['views'] = request.session.get('views', 0) + 1
     cartype_list = CarType.objects.all().order_by('id')
-    return render(request, 'carapp/homepage.html', {'cartype_list': cartype_list})
+    return render(request, 'carapp/homepage.html', {'cartype_list': cartype_list, 'views': request.session['views']})
 
 
 # yes, we are passing extra context variable 'cartype_list' to the template which contains a list of all the vehicles
@@ -35,7 +39,17 @@ def homepage(request):
 
 
 def aboutUs(request):
-    return render(request, 'carapp/aboutUs.html')
+    image = ''
+    if request.method == 'POST':
+        form = SearchCartypeForm(request.POST)
+        if form.is_valid():
+            car_type = form.cleaned_data['car_type']
+            image = car_type.image
+    else:
+        form = SearchCartypeForm()
+
+    return render(request, 'carapp/aboutUs.html', {'form': form, 'image': image})
+    # return render(request, 'carapp/aboutUs.html')
 
 
 # we didn't need to pass any variables using the context parameter
@@ -146,10 +160,16 @@ def orderhere(request):
                 msg = 'Your vehicle has been ordered'
             else:
                 msg = 'We do not have sufficient stock to fill your order.'
-                return render(request, 'carapp/nosuccess_order.html', {'msg': msg})
+                response = render(request, 'carapp/nosuccess_order.html', {'msg': msg})
+                # set a cookie that expires in 60 seconds
+                response.set_cookie('OrderPage', 'Could Not Order', max_age=60)
+                return response
     else:
         form = OrderVehicleForm()
-    return render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
+    response = render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
+    response.set_cookie('OrderPage', 'ordering', max_age=60)
+    return response
+    # return render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
 
 
 def vsearch(request):
@@ -163,3 +183,41 @@ def vsearch(request):
         form = SearchVehicleForm()
 
     return render(request, 'carapp/vsearch.html', {'form': form, 'car_price': car_price})
+
+
+class SignUpView(generic.CreateView):
+    form_class = SignupForm
+    success_url = reverse_lazy('carapp/login')  # After signing up, redirect to login page
+    template_name = 'carapp/signup.html'
+
+
+def login_here(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('carapp:homepage'))
+            else:
+                return HttpResponse('Your account is disabled')
+        else:
+            return HttpResponse('Login details are incorrect')
+    else:
+        return render(request, 'carapp/login_here.html')
+
+
+@login_required
+def logout_here(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('carapp:homepage'))
+
+
+@login_required
+def list_of_orders(request):
+    if Buyer.objects.filter(username=request.user.username).exists():  # check if the user is a buyer
+        orders = OrderVehicle.objects.filter(buyer__username=request.user.username)  # get all orders placed by the user
+        return render(request, 'carapp/list_of_orders.html', {'orders': orders})
+    else:
+        return render(request, 'carapp/list_of_orders.html', {'message': 'You are not registered'})
