@@ -22,6 +22,7 @@ app_name = 'carapp'
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),
+    path('orders/', views.list_of_orders, name='orders'),
     path('lab_group_members/', LabGroupMembersView.as_view(), name='lab_group_members'),
     path('<int:cartype_no>/', views.cardetail, name='cardetail'),
     path('info_display/', views.info_display, name='info_display'),
@@ -33,3 +34,4 @@ urlpatterns = [
     path('login/', views.login_here, name='login'),
     path('logout/', views.logout_here, name='logout'),
 ]
+# password for users: caruserpass

@@ -13,6 +13,11 @@
     <a href="{% url 'carapp:lab_group_members'%}" {% if request.resolver_match.url_name == 'lab_group_members' %}class="active"{% endif %}>Team Detail</a>
     <a href="{% url 'carapp:vehicles'%}" {% if request.resolver_match.url_name == 'vehicles' %}class="active"{% endif %}>Vehicles</a>
     <a href="{% url 'carapp:orderhere'%}" {% if request.resolver_match.url_name == 'orderhere' %}class="active"{% endif %}>Order</a>
+    {% if user.is_authenticated %}
+         <a href="{% url 'carapp:logout' %}" {% if request.resolver_match.url_name == 'logout' %}class="active"{% endif %}>Logout</a>
+    {% else %}
+        <a href="{% url 'carapp:login' %}" {% if request.resolver_match.url_name == 'login' %}class="active"{% endif %}>Login</a>
+    {% endif %}
 </div>
 <div class="content">
     <h1>{% block my %} Welcome to our online car store {% endblock %}</h1>

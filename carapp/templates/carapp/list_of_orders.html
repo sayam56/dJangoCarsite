@@ -1,0 +1,19 @@
+{% extends 'carapp/base.html' %}
+
+{% block body_block %}
+  {% if orders %}
+    <h2>Your Orders</h2>
+    <ul>
+      {% for order in orders %}
+        <li>
+          Vehicle: {{ order.vehicle }}<br>
+          Number Ordered: {{ order.num_ordered }}<br>
+          Order Status: {{ order.get_order_status_display }}<br>
+          Last Updated: {{ order.last_updated_date }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{{ message }}</p>
+  {% endif %}
+{% endblock %}

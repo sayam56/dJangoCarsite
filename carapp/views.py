@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle
+from .models import CarType, Vehicle, LabGroupMembers, OrderVehicle, Buyer
 from django.shortcuts import render, get_object_or_404
 from django.views import View, generic
 from .forms import SearchVehicleForm, OrderVehicleForm, SignupForm, SearchCartypeForm
@@ -11,8 +11,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
 def homepage(request):
+    request.session['views'] = request.session.get('views', 0) + 1
     cartype_list = CarType.objects.all().order_by('id')
-    return render(request, 'carapp/homepage.html', {'cartype_list': cartype_list})
+    return render(request, 'carapp/homepage.html', {'cartype_list': cartype_list, 'views': request.session['views']})
 
 
 # yes, we are passing extra context variable 'cartype_list' to the template which contains a list of all the vehicles
@@ -159,10 +160,16 @@ def orderhere(request):
                 msg = 'Your vehicle has been ordered'
             else:
                 msg = 'We do not have sufficient stock to fill your order.'
-                return render(request, 'carapp/nosuccess_order.html', {'msg': msg})
+                response = render(request, 'carapp/nosuccess_order.html', {'msg': msg})
+                # set a cookie that expires in 60 seconds
+                response.set_cookie('OrderPage', 'Could Not Order', max_age=60)
+                return response
     else:
         form = OrderVehicleForm()
-    return render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
+    response = render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
+    response.set_cookie('OrderPage', 'ordering', max_age=60)
+    return response
+    # return render(request, 'carapp/orderhere.html', {'form': form, 'msg': msg, 'vehiclelist': vehiclelist})
 
 
 def vsearch(request):
@@ -205,3 +212,12 @@ def login_here(request):
 def logout_here(request):
     logout(request)
     return HttpResponseRedirect(reverse('carapp:homepage'))
+
+
+@login_required
+def list_of_orders(request):
+    if Buyer.objects.filter(username=request.user.username).exists():  # check if the user is a buyer
+        orders = OrderVehicle.objects.filter(buyer__username=request.user.username)  # get all orders placed by the user
+        return render(request, 'carapp/list_of_orders.html', {'orders': orders})
+    else:
+        return render(request, 'carapp/list_of_orders.html', {'message': 'You are not registered'})
