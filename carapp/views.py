@@ -221,3 +221,12 @@ def list_of_orders(request):
         return render(request, 'carapp/list_of_orders.html', {'orders': orders})
     else:
         return render(request, 'carapp/list_of_orders.html', {'message': 'You are not registered'})
+
+
+# def user_profile(request):
+#     if Buyer.objects.filter(username=request.user.username).exists():  # check if the user is a buyer
+#         return render(request, 'carapp/aboutus.html')
+#     elif Seller.objects.filter(username=request.user.username).exists():  # check if the user is a seller
+#         return render(request, 'carapp/homepage.html')
+#     else:
+#         return HttpResponse('You are neither a registered Buyer nor a Seller')
